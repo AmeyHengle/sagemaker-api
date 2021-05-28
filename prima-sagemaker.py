@@ -80,8 +80,8 @@ def transformation():
     print("\nformatting done, sending response")
 #     result= predictions
 #     result = "This is a sample result response returned by the SAGEMAKER"
-    result = flask.jsonify(original_layout_predictions)
-    
+    # result = flask.jsonify(original_layout_predictions)
+    result = json.dumps(original_layout_predictions)    
     return flask.Response(response=result, status=200)
 
 
