@@ -53,17 +53,33 @@ def transformation():
     file = flask.request.files['image'].read() ## byte fil   
     npimg = np.fromstring(file, np.uint8)
     img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
+    page_height, page_width, page_channel = img.shape
 
     print("\nLoading Model")
     model = custom_PRIMA()
     model.load_model()
     print("\nModel Loaded. Ready for predictions.")
     
-    predictions = model.model.predict(img)
+    predictions = model.model.detect(img)
+    print("\nPredictions done, intiated formatting")
 
-    #     result= predictions
+    bbox = []
+
+    for prediction_ele in predictions:
+        if prediction_ele.score  < 0.7:
+            continue
+        box = list( prediction_ele.coordinates )
+        _ = [box[0]/page_width, box[1]/page_height, box[2]/page_width, box[3]/page_height]
+        label = prediction_ele.type
+        score = prediction_ele.score            
+        bbox.append(dict(label=label,bbox=box, relative_box=_, score = score))
+
+    bounding_box = dict(page_width=page_width, page_height=page_height,boxes=bbox)
+    original_layout_predictions = deepcopy(bounding_box) 
+    print("\nformatting done, sending response")
+#     result= predictions
 #     result = "This is a sample result response returned by the SAGEMAKER"
-    result = predictions
+    result = flask.jsonify(predictions)
     
     return flask.Response(response=result, status=200)
 
