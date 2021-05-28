@@ -33,7 +33,7 @@ app = flask.Flask(__name__)
 def ping():
     """Determine if the container is working and healthy. In this sample container, we declare
     it healthy if we can load the model successfully."""
-    health = ScoringService.get_model() is not None  # You can insert a health check here
+    health = True  # You can insert a health check here
 
     status = 200 if health else 404
     return flask.Response(response='\n', status=status, mimetype='application/json')
@@ -82,7 +82,7 @@ def transformation():
 #     result = "This is a sample result response returned by the SAGEMAKER"
     # result = flask.jsonify(original_layout_predictions)
     result = json.dumps(original_layout_predictions)    
-    return flask.Response(response=result, status=200)
+    return flask.Response(response=result, status=200,  mimetype="application/json") 
 
 
 if __name__ == "__main__":
