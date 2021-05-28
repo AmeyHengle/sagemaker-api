@@ -3,6 +3,7 @@ import json
 import numpy as np
 import cv2
 import flask
+from copy import deepcopy 
 
 prefix = "/opt/ml/"
 
